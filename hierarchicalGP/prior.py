@@ -23,7 +23,7 @@ class Prior(object):
 
         cov = self.kernel.K(self.x,*args,**kwargs)
         cov += cov.mean()*np.eye(self.n)*1e-6
-        
+
         ll = 0
         for i in range(obs.shape[1]):
             ll += scipy.stats.multivariate_normal.logpdf(obs[:,i],self.mu,cov)
@@ -34,6 +34,7 @@ class Prior(object):
 
         resid = m.residual(f)
         n = m.designMatrix[f,:]
+        n = n[n!=0]
 
         y_inv = yKernel.K_inv(self.x)
         f_inv = self.kernel.K_inv(self.x)
@@ -52,5 +53,5 @@ class Prior(object):
     def sample(self,m,yKernel):
 
         for f in self.functions:
-            mu,cov = self.functionParameters(m,yKernel)
+            mu,cov = self.functionParameters(m,yKernel,f)
             m.beta[:,f] = scipy.stats.multivariate_normal.rvs(mu,cov)
