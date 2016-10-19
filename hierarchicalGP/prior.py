@@ -1,6 +1,7 @@
 from kernel import RBF, White
 import linalg
 import numpy as np
+import scipy.stats
 
 class Prior(object):
 
@@ -21,6 +22,8 @@ class Prior(object):
         assert obs.shape[0] == self.n
 
         cov = self.kernel.K(self.x,*args,**kwargs)
+        cov += cov.mean()*np.eye(self.n)*1e-6
+        
         ll = 0
         for i in range(obs.shape[1]):
             ll += scipy.stats.multivariate_normal.logpdf(obs[:,i],self.mu,cov)
@@ -45,3 +48,9 @@ class Prior(object):
         mu,cov = np.dot(A_inv,b), A_inv
 
         return mu,cov
+
+    def sample(self,m,yKernel):
+
+        for f in self.functions:
+            mu,cov = self.functionParameters(m,yKernel)
+            m.beta[:,f] = scipy.stats.multivariate_normal.rvs(mu,cov)

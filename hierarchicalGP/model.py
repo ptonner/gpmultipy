@@ -1,8 +1,10 @@
 import numpy as np
 from kernel import RBF, White
 import linalg
+import scipy.stats
+from freeze import Freezeable
 
-class Model(object):
+class Model(Freezeable):
 
     def __init__(self,x,y,designMatrix=None):
 
@@ -27,6 +29,22 @@ class Model(object):
         self.f = self.designMatrix.shape[0]
 
         self.beta = np.zeros((self.n,self.f))
+
+        # Freezeable.__init__(self,*[lambda: self.function(z) for z in range(self.f)])
+        Freezeable.__init__(self,*['beta'])
+
+    def function(self,f=0):
+        return self.beta[:,f]
+
+    def dataLikelihood(self,yKernel,*args,**kwargs):
+        cov = yKernel.K(self.x,*args,**kwargs)
+        mu = np.dot(self.beta,self.designMatrix)
+
+        ll = 1
+        for i in range(self.r):
+            ll += scipy.stats.multivariate_normal.logpdf(self.y[:,i],mu[:,i],cov)
+
+        return ll
 
     def residual(self,f=None):
 

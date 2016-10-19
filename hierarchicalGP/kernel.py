@@ -1,5 +1,6 @@
 import numpy as np
 import linalg
+from freeze import Freezeable
 
 class Kernel(object):
 
@@ -21,7 +22,7 @@ class Kernel(object):
 
         return inv
 
-class RBF(Kernel):
+class RBF(Kernel,Freezeable):
 
     @staticmethod
     def dist(X,lengthscale):
@@ -32,16 +33,29 @@ class RBF(Kernel):
         r2 = np.clip(r2, 0, np.inf)
         return np.sqrt(r2)
 
-    def K(self,X,sigma=1,lengthscale=1):
+    def __init__(self,p,sigma=1,lengthscale=1):
+        Kernel.__init__(self,p)
+        Freezeable.__init__(self,*['sigma','lengthscale'])
+
+        self.sigma = sigma
+        self.lengthscale = lengthscale
+
+    def K(self,X,sigma=None,lengthscale=None):
+
+        if sigma is None:
+            sigma = self.sigma
+        if lengthscale is None:
+            lengthscale = self.lengthscale
 
         dist = RBF.dist(X,lengthscale)
         return sigma*np.exp(-.5*dist**2)
 
-class White(Kernel):
+class White(Kernel,Freezeable):
 
     def __init__(self,p,sigma=1):
-        self.p = p
-        self.sigma = 1
+        Kernel.__init__(self,p)
+        Freezeable.__init__(self,*['sigma'])
+        self.sigma = sigma
 
     def K(self,X,sigma=None):
         if sigma is None:
