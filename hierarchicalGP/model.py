@@ -30,8 +30,7 @@ class Model(Freezeable):
 
         self.beta = np.zeros((self.n,self.f))
 
-        # Freezeable.__init__(self,*[lambda: self.function(z) for z in range(self.f)])
-        Freezeable.__init__(self,*['beta'])
+        Freezeable.__init__(self,'beta')
 
     def function(self,f=0):
         return self.beta[:,f]

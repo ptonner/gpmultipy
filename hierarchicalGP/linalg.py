@@ -59,3 +59,16 @@ def jitchol(A, maxtries=5):
 		logging.warning('\n'.join(['Added jitter of {:.10e}'.format(jitter),
 			'  in '+traceback.format_list(traceback.extract_stack(limit=3)[-2:-1])[0][2:]]))
 	return L
+
+def invert_K(K):
+
+    try:
+        chol = jitchol(K)
+        chol_inv = np.linalg.inv(chol)
+    except np.linalg.linalg.LinAlgError,e:
+        logger = logging.getLogger(__name__)
+        logger.error('Kernel inversion error: %s'%str(self.parameters))
+        raise(e)
+    inv = np.dot(chol_inv.T,chol_inv)
+
+    return inv

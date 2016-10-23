@@ -2,8 +2,9 @@ from kernel import RBF, White
 import linalg
 import numpy as np
 import scipy.stats
+from sampler.sampler import Sampler
 
-class Prior(object):
+class Prior(Sampler):
 
     def __init__(self,x,kernel,functions=[],mu=None):
         self.x=x
@@ -50,8 +51,11 @@ class Prior(object):
 
         return mu,cov
 
-    def sample(self,m,yKernel):
+    def _sample(self,m,yKernel):
+
+        ret = np.zeros(m.beta.shape)
 
         for f in self.functions:
             mu,cov = self.functionParameters(m,yKernel,f)
             m.beta[:,f] = scipy.stats.multivariate_normal.rvs(mu,cov)
+            # m.beta[:,f] = scipy.stats.multivariate_normal.rvs(mu,cov)
