@@ -53,7 +53,7 @@ class TestRBF(TestKernel):
         k2 = self.kernel.K(self.x)
         self.assertTrue(np.less(k2,k1).all())
 
-class TestRBF(TestKernel):
+class TestWhite(TestKernel):
     def __init__(self,*args,**kwargs):
         TestKernel.__init__(self,*args,**kwargs)
         self.kernelType = White
@@ -124,36 +124,6 @@ class TestProduct(TestCombination):
 
     def kernelCombinationOperation(self,k1,k2):
         return k1*k2
-
-    # def test_HyperparameterChange(self):
-    #
-    #     k = self.k1.K(self.x,sigma=10)
-    #     k *= self.k2.K(self.x)
-    #     self.assertTrue(np.allclose(k,self.kernel.K(self.x,k1_sigma=10)))
-    #
-    #     k = self.k1.K(self.x,lengthscale=10)
-    #     k *= self.k2.K(self.x)
-    #     self.assertTrue(np.allclose(k,self.kernel.K(self.x,k1_lengthscale=10)))
-    #
-    #     k = self.k2.K(self.x,sigma=10)
-    #     k *= self.k1.K(self.x)
-    #     self.assertTrue(np.allclose(k,self.kernel.K(self.x,k2_sigma=10)))
-    #
-    #     k = self.k2.K(self.x,lengthscale=10)
-    #     k *= self.k1.K(self.x)
-    #     self.assertTrue(np.allclose(k,self.kernel.K(self.x,k2_lengthscale=10)))
-    #
-    #     k = self.k1.K(self.x,sigma=10)
-    #     k *= self.k2.K(self.x)
-    #     self.assertTrue(np.allclose(k,self.kernel.K(self.x,k1_sigma=10)))
-    #
-    #     k = self.k1.K(self.x,sigma=2)
-    #     k *= self.k2.K(self.x,sigma=3)
-    #     self.assertTrue(np.allclose(k,self.kernel.K(self.x,k1_sigma=2,k2_sigma=3)))
-    #
-    #     k = self.k1.K(self.x,lengthscale=10)
-    #     k *= self.k2.K(self.x,lengthscale=12)
-    #     self.assertTrue(np.allclose(k,self.kernel.K(self.x,k1_lengthscale=10,k2_lengthscale=12)))
 
 class TestProduct_RBFandLinear(TestProduct):
     def __init__(self,*args,**kwargs):
