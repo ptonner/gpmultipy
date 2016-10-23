@@ -11,7 +11,7 @@ class Product(Kernel):
 
         Kernel.__init__(self,self.k1.p,*args,**kwargs)
 
-    def _K(self,X,**kwargs):
+    def K(self,X,**kwargs):
 
         kwargs1 = {}
         kwargs2 = {}
