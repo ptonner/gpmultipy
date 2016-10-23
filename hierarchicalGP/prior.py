@@ -1,5 +1,5 @@
 from kernel import RBF, White
-import linalg
+import linalg, mvn
 import numpy as np
 import scipy.stats
 from sampler.sampler import Sampler
@@ -23,11 +23,16 @@ class Prior(Sampler):
         assert obs.shape[0] == self.n
 
         cov = self.kernel.K(self.x,*args,**kwargs)
-        cov += cov.mean()*np.eye(self.n)*1e-6
+        #cov += cov.mean()*np.eye(self.n)*1e-6
+        # cov += np.eye(self.n)*1e-2
+
+        chol = linalg.jitchol(cov)
+        # cov = np.dot(chol,chol.T)
 
         ll = 0
         for i in range(obs.shape[1]):
-            ll += scipy.stats.multivariate_normal.logpdf(obs[:,i],self.mu,cov)
+            # ll += scipy.stats.multivariate_normal.logpdf(obs[:,i],self.mu,cov)
+            ll += mvn.logpdf(obs[:,i],self.mu,L=chol)
 
         return ll
 

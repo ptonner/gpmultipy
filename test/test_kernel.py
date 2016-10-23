@@ -14,6 +14,7 @@ class TestKernel(unittest.TestCase):
         self.kernelType=TestingKernel
         self.kernelKwargs = {}
         self.p=1
+        self.defaults = {}
 
     def setUp(self,):
 
@@ -28,10 +29,27 @@ class TestKernel(unittest.TestCase):
         inv = linalg.invert_K(k)
         self.assertTrue(np.allclose(self.kernel.K_inv(self.x),inv))
 
+    def test_defaults(self,):
+        for k,v in self.defaults.iteritems():
+            self.assertEqual(self.kernel.__dict__[k],v)
+
 class TestRBF(TestKernel):
     def __init__(self,*args,**kwargs):
         TestKernel.__init__(self,*args,**kwargs)
         self.kernelType = RBF
+        self.defaults = {'sigma':1.,'lengthscale':1.}
+
+    def test_differentLengthscale(self,):
+        k1 = self.kernel.K(self.x,lengthscale=10)
+        self.kernel.lengthscale = 10
+        k2 = self.kernel.K(self.x,)
+        self.assertTrue(np.allclose(k1,k2))
+
+    def test_differentSigma(self,):
+        k1 = self.kernel.K(self.x,sigma=.1)
+        self.kernel.sigma = .1
+        k2 = self.kernel.K(self.x,)
+        self.assertTrue(np.allclose(k1,k2))
 
     def test_updateLengthscale(self,):
         k1 = self.kernel.K(self.x)
@@ -57,6 +75,15 @@ class TestWhite(TestKernel):
     def __init__(self,*args,**kwargs):
         TestKernel.__init__(self,*args,**kwargs)
         self.kernelType = White
+
+class TestLinear(TestKernel):
+    def __init__(self,*args,**kwargs):
+        TestKernel.__init__(self,*args,**kwargs)
+        self.kernelType = Linear
+
+    def test_kernel(self,):
+        dot = np.dot(self.x,self.x.T)
+        self.assertTrue(np.allclose(dot,self.kernel.K(self.x)))
 
 class TestCombination(TestKernel):
     def __init__(self,*args,**kwargs):

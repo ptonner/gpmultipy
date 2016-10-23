@@ -7,7 +7,9 @@ class Freezeable(object):
         self.targets = args
 
     def freeze(self,):
-        return [copy.copy(self.__dict__[a]) if not type(a)==types.FunctionType else a() for a in self.targets]
+        # return [copy.copy(self.__dict__[a]) for a in self.targets]
+        return {a:copy.copy(self.__dict__[a]) for a in self.targets}
+        # return {a:copy.copy(self.__dict__[a]) if not type(self.__dict__[a])==types.Function else a:self.__dict__[a]() for a in self.targets}
 
     def update(self,name,value):
         self.__dict__[name] = value
