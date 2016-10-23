@@ -111,8 +111,6 @@ class TestCombination(TestKernel):
         k = self.kernelCombinationOperation(k,self.k2.K(self.x,lengthscale=12))
         self.assertTrue(np.allclose(k,self.kernel.K(self.x,k1_lengthscale=10,k2_lengthscale=12)))
 
-        print 'test'
-
 class TestProduct(TestCombination):
 
     def __init__(self,*args,**kwargs):
