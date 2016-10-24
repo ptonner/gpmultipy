@@ -15,14 +15,9 @@ class TestLinalg(unittest.TestCase):
         self.cov = np.dot(self.L,self.L.T)
         self.covInv = np.dot(self.Linv.T,self.Linv)
 
-        # import matplotlib.pyplot as plt
-        # plt.imshow(self.cov,interpolation='none')
-        # plt.show()
-
     def test_choleskyDecomp(self):
 
         chol = linalg.jitchol(self.cov)
-
         self.assertTrue(np.allclose(self.L,chol))
 
     def test_covInv(self):
