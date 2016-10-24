@@ -1,3 +1,4 @@
+import pathhack
 from hierarchicalGP.model import Model
 from hierarchicalGP.prior import Prior
 from hierarchicalGP.kernel import RBF, White
