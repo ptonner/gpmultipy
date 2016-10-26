@@ -1,5 +1,5 @@
 import unittest
-from hierarchicalGP import linalg
+from gpmultipy import linalg
 import numpy as np
 
 class TestLinalg(unittest.TestCase):

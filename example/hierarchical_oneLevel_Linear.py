@@ -1,9 +1,9 @@
 import pathhack
-from hierarchicalGP.model import Model
-from hierarchicalGP.prior import Prior
-from hierarchicalGP.kernel import RBF, White, Linear, Product
-from hierarchicalGP.freeze import Freezer
-from hierarchicalGP.sampler.slice import Slice
+from gpmultipy.model import Model
+from gpmultipy.prior import Prior
+from gpmultipy.kernel import RBF, White, Linear, Product
+from gpmultipy.freeze import Freezer
+from gpmultipy.sampler.slice import Slice
 import scipy.stats
 import numpy as np
 import matplotlib.pyplot as plt

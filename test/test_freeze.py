@@ -1,5 +1,5 @@
 import unittest
-from hierarchicalGP import Freezer, Freezeable
+from gpmultipy import Freezer, Freezeable
 import numpy as np
 
 class TestFreezeable(Freezeable):

@@ -1,5 +1,5 @@
 import unittest
-from hierarchicalGP.model import Model
+from gpmultipy.model import Model
 import numpy as np
 
 class TestModel(unittest.TestCase):

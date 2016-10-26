@@ -1,5 +1,5 @@
 import unittest
-from hierarchicalGP import linalg,mvn
+from gpmultipy import linalg,mvn
 import numpy as np
 import scipy
 

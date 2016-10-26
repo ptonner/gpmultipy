@@ -1,6 +1,6 @@
 import unittest
-from hierarchicalGP.kernel import Kernel, RBF, White, Addition, Product, Linear
-from hierarchicalGP import linalg
+from gpmultipy.kernel import Kernel, RBF, White, Addition, Product, Linear
+from gpmultipy import linalg
 import numpy as np
 
 class TestingKernel(Kernel):
