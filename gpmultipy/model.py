@@ -52,6 +52,7 @@ class Model(Freezeable):
 
         if not f is None:
             r += np.dot(self.beta[:,f][:,None],self.designMatrix[f,:][None,:])
+            r = r/self.designMatrix[f,:]
             r = r[:,self.designMatrix[f,:]!=0]
 
         return r

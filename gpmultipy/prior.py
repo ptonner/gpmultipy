@@ -23,25 +23,32 @@ class Prior(Sampler):
         assert obs.shape[0] == self.n
 
         cov = self.kernel.K(self.x,*args,**kwargs)
-        chol = linalg.jitchol(cov)
+        # chol = linalg.jitchol(cov)
 
-        ll = 0
+        # cov = np.dot(chol,chol.T)
+        cov += cov.mean()*np.eye(self.n)*1e-6
+
+        ll = 1
         for i in range(obs.shape[1]):
-            ll += mvn.logpdf(obs[:,i],self.mu,L=chol)
+            #ll += mvn.logpdf(obs[:,i],self.mu,L=chol)
+            #print scipy.stats.multivariate_normal.logpdf(obs[:,i],self.mu,cov)
+            ll += scipy.stats.multivariate_normal.logpdf(obs[:,i],self.mu,cov)
 
         return ll
 
     def functionParameters(self,m,yKernel,f=0):
 
         resid = m.residual(f)
-        n = m.designMatrix[f,:]
+        n = np.power(m.designMatrix[f,:],2)
         n = n[n!=0]
+
+        resid = np.nansum((resid*n),1)
 
         y_inv = yKernel.K_inv(self.x)
         f_inv = self.kernel.K_inv(self.x)
 
         A = n.sum()*y_inv + f_inv
-        b = np.dot(y_inv,resid).sum(1)
+        b = np.dot(y_inv,resid)#.sum(1)
 
         chol_A = linalg.jitchol(A)
         chol_A_inv = np.linalg.inv(chol_A)

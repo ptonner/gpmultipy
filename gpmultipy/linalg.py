@@ -46,7 +46,10 @@ def jitchol(A, maxtries=5):
 		while num_tries <= maxtries and np.isfinite(jitter):
 			try:
 				L = linalg.cholesky(A + np.eye(A.shape[0]) * jitter, lower=True)
-				# print num_tries,jitter
+
+				if np.linalg.det(L) == 0:
+					raise
+
 				return L
 			except:
 				jitter *= 10
