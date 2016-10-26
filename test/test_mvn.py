@@ -1,7 +1,7 @@
 import unittest
 from gpmultipy import linalg,mvn
 import numpy as np
-import scipy
+import scipy.stats
 
 class TestMVN(unittest.TestCase):
 
@@ -10,7 +10,7 @@ class TestMVN(unittest.TestCase):
 
         for i in range(self.L.shape[0]):
             self.L[i:,i] = np.random.normal(size=self.L.shape[0]-i)
-            self.L[i,i] = abs(self.L[i,i])+np.random.rand()*3
+            self.L[i,i] = abs(self.L[i,i])+np.random.rand()*5
 
         self.cov = np.dot(self.L,self.L.T)
 
