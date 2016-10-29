@@ -23,10 +23,15 @@ class Prior(Sampler):
         assert obs.shape[0] == self.n
 
         cov = self.kernel.K(self.x,*args,**kwargs)
-        # chol = linalg.jitchol(cov)
+        chol = linalg.jitchol(cov)
 
-        # cov = np.dot(chol,chol.T)
-        cov += cov.mean()*np.eye(self.n)*1e-6
+        covcopy = cov.copy()
+
+        cov = np.dot(chol,chol.T)
+        # cov += cov.mean()*np.eye(self.n)*1e-5
+
+        # print np.abs(cov-covcopy).mean()
+        # print np.diag(np.abs(cov-covcopy)).sum()
 
         ll = 1
         for i in range(obs.shape[1]):
@@ -41,14 +46,28 @@ class Prior(Sampler):
         resid = m.residual(f)
         n = np.power(m.designMatrix[f,:],2)
         n = n[n!=0]
+        missingValues = np.isnan(resid)
+
+        # print resid.shape, n.shape
+        # print resid.sum(1)
+        # print n
 
         resid = np.nansum((resid*n),1)
+        # resid = np.nansum(resid,1)
+        # n = np.sum(((~missingValues)*n).T,0)
+
+        # print resid.shape, n.shape
+        # print resid
+        # print n
+        # print n.sum()
 
         y_inv = yKernel.K_inv(self.x)
         f_inv = self.kernel.K_inv(self.x)
 
         A = n.sum()*y_inv + f_inv
+        # A = n*y_inv + f_inv
         b = np.dot(y_inv,resid)#.sum(1)
+        # b = np.dot(y_inv*n.sum(),resid)
 
         chol_A = linalg.jitchol(A)
         chol_A_inv = np.linalg.inv(chol_A)
