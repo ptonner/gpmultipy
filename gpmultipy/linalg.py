@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import numpy as np
 from scipy import linalg
 from scipy.linalg import lapack, blas
+import logging, traceback
 
 def jitchol(A, maxtries=5):
 	A = np.ascontiguousarray(A)
@@ -49,6 +50,8 @@ def jitchol(A, maxtries=5):
 
 				if np.linalg.det(L) == 0:
 					raise
+
+				# logging.warning('\n'.join(['Added jitter of {:.10e}'.format(jitter),]))
 
 				return L
 			except:

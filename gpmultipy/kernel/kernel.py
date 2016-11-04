@@ -1,5 +1,6 @@
 import numpy as np
 from .. import linalg
+import logging
 
 class Kernel(object):
 
@@ -15,7 +16,7 @@ class Kernel(object):
             chol_inv = np.linalg.inv(chol)
         except np.linalg.linalg.LinAlgError,e:
             logger = logging.getLogger(__name__)
-            logger.error('Kernel inversion error: %s'%str(self.parameters))
+            # logger.error('Kernel inversion error: %s'%str(self.parameters))
             raise(e)
         inv = np.dot(chol_inv.T,chol_inv)
 

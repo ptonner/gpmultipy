@@ -17,8 +17,8 @@ sigma = .5
 k1 = RBF(1,sigma=sigma*theta,lengthscale=.5)
 k2 = RBF(1,sigma=sigma*(1-theta),lengthscale=1)
 
-p = 3
-b = 8
+p = 2
+b = 10
 dm = np.zeros((1+b,p*b))
 dm[0,:] = 1
 for i in range(b):
@@ -54,21 +54,21 @@ kLengthscaleSlice = Slice('kLengthscale',
 
 k2SigmaSlice = Slice('k2Sigma',
                     lambda x: prior2.loglikelihood(model.beta,sigma=x),
-                    lambda x: scipy.stats.uniform(1e-2,1e0).logpdf(x),
+                    lambda x: scipy.stats.uniform(1e-2,1e1).logpdf(x),
                     .1,10,logspace=True)
 
 k2LengthscaleSlice = Slice('k2Lengthscale',
                     lambda x: prior2.loglikelihood(model.beta,lengthscale=x),
-                    lambda x: scipy.stats.uniform(1e-2,1e0).logpdf(x),
+                    lambda x: scipy.stats.uniform(1e-2,1e1).logpdf(x),
                     .1,10,logspace=True)
 
 samples = []
 freeze = Freezer(yKernel=yKernel,k1=k1,k2=k2,model=model)
 
 thin = 10
-burnin = 200
-nsample = 1000
-
+burnin = 0
+nsample = 4000
+ll = []
 for i in range(nsample):
     prior.sample(model,yKernel)
     prior2.sample(model,yKernel)
@@ -82,8 +82,11 @@ for i in range(nsample):
     k2.lengthscale = k2LengthscaleSlice.sample(k2.lengthscale)
 
     if i % thin == 0 and i > burnin:
-        print model.dataLikelihood(yKernel), k1.sigma, k1.lengthscale
         samples.append(freeze.freeze())
+        print model.dataLikelihood(yKernel), k1.sigma, k1.lengthscale, k2.sigma, k2.lengthscale
+        # print samples[-1]
+
+        ll.append(model.dataLikelihood(yKernel))
 
 
 nrow = 4
@@ -92,6 +95,7 @@ ncol = max(b+1,5)
 # plt.subplot(nrow,ncol,1)
 plt.subplot2grid((nrow,ncol),(0,0),colspan=ncol,rowspan=2)
 plt.plot(y)
+plt.plot(fsample[:,0])
 
 # plt.subplot(nrow,ncol,2)
 plt.subplot2grid((nrow,ncol),(2,0))
@@ -106,20 +110,27 @@ for i in range(b):
 
     plt.ylim(fsample.min()-.2,fsample.max()+.2)
 
-plt.subplot2grid((nrow,ncol),(3,0))
+plt.subplot2grid((nrow,ncol),(3,0),colspan=2)
 plt.hist([s['yKernel']['sigma'] for s in samples])
 
-plt.subplot2grid((nrow,ncol),(3,1))
-plt.hist(np.log([s['k1']['sigma'] for s in samples]))
+plt.subplot2grid((nrow,ncol),(3,2),colspan=2)
+# plt.hist(np.log10([s['k1']['sigma'] for s in samples]))
+plt.hist([s['k1']['sigma'] for s in samples])
 
-plt.subplot2grid((nrow,ncol),(3,2))
-plt.hist(np.log([s['k1']['lengthscale'] for s in samples]))
+plt.subplot2grid((nrow,ncol),(3,4),colspan=2)
+# plt.hist(np.log10([s['k1']['lengthscale'] for s in samples]))
+plt.hist([s['k1']['lengthscale'] for s in samples])
 
-plt.subplot2grid((nrow,ncol),(3,3))
-plt.hist(np.log([s['k2']['sigma'] for s in samples]))
+plt.subplot2grid((nrow,ncol),(3,6),colspan=2)
+# plt.hist(np.log10([s['k2']['sigma'] for s in samples]))
+plt.hist([s['k2']['sigma'] for s in samples])
 
-plt.subplot2grid((nrow,ncol),(3,4))
-plt.hist(np.log([s['k2']['lengthscale'] for s in samples]))
+plt.subplot2grid((nrow,ncol),(3,8),colspan=2)
+# plt.hist(np.log10([s['k2']['lengthscale'] for s in samples]))
+plt.hist([s['k2']['lengthscale'] for s in samples])
+
+plt.subplot2grid((nrow,ncol),(3,9),)
+plt.plot(ll)
 
 
 plt.show()
