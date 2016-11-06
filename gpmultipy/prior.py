@@ -37,7 +37,11 @@ class Prior(Sampler):
         for i in range(obs.shape[1]):
             #ll += mvn.logpdf(obs[:,i],self.mu,L=chol)
             #print scipy.stats.multivariate_normal.logpdf(obs[:,i],self.mu,cov)
-            ll += scipy.stats.multivariate_normal.logpdf(obs[:,i],self.mu,cov)
+
+            try:
+                ll += scipy.stats.multivariate_normal.logpdf(obs[:,i],self.mu,cov)
+            except:
+                return -np.inf
 
         return ll
 

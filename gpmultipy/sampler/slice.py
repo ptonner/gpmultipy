@@ -28,8 +28,8 @@ class Slice(Sampler):
         self.m = m
         self.logspace = logspace
 
-    def loglikelihood(self,x):
-        if self.logspace:
+    def loglikelihood(self,x,useLogspace=True):
+        if useLogspace and self.logspace:
             x = pow(10,x)
 
         pldf = self.prior_logdensity_fxn(x)
