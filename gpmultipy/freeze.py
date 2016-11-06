@@ -8,7 +8,7 @@ class Freezeable(object):
 
     def freeze(self,):
         # return [copy.copy(self.__dict__[a]) for a in self.targets]
-        return {a:copy.copy(self.__dict__[a]) for a in self.targets}
+        return {a:copy.copy(self.__dict__[a]) if type(a) != Freezeable else {a:self.__dict__[a].freeze()} for a in self.targets}
         # return {a:copy.copy(self.__dict__[a]) if not type(self.__dict__[a])==types.Function else a:self.__dict__[a]() for a in self.targets}
 
     def update(self,name,value):

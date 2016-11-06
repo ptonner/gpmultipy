@@ -1,6 +1,7 @@
 from kernel import Kernel
+from ..freeze import Freezeable
 
-class Product(Kernel):
+class Product(Kernel,Freezeable):
 
     def __init__(self,k1,k2,*args,**kwargs):
 
@@ -10,6 +11,7 @@ class Product(Kernel):
         assert self.k1.p == self.k2.p
 
         Kernel.__init__(self,self.k1.p,*args,**kwargs)
+        Freezeable.__init__(self,'k1','k2')
 
     def K(self,X,**kwargs):
 
