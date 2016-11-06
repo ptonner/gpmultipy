@@ -53,7 +53,7 @@ trueParams = freeze.freeze()
 
 thin = 10
 burnin = 0
-nsample = 3000
+nsample = 1000
 
 ll = []
 

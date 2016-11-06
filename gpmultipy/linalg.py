@@ -48,8 +48,8 @@ def jitchol(A, maxtries=5):
 			try:
 				L = linalg.cholesky(A + np.eye(A.shape[0]) * jitter, lower=True)
 
-				if np.linalg.det(L) == 0:
-					raise
+				# if np.linalg.det(L) == 0:
+				# 	raise
 
 				# logging.warning('\n'.join(['Added jitter of {:.10e}'.format(jitter),]))
 

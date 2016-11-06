@@ -23,15 +23,22 @@ class Prior(Sampler):
         assert obs.shape[0] == self.n
 
         cov = self.kernel.K(self.x,*args,**kwargs)
+
+        #solution 1
+        # cov += cov.mean()*np.eye(self.n)*1e-6
+
+        # solution 2
         chol = linalg.jitchol(cov)
-
-        covcopy = cov.copy()
-
         cov = np.dot(chol,chol.T)
+
+        # covcopy = cov.copy()
+
         # cov += cov.mean()*np.eye(self.n)*1e-5
 
         # print np.abs(cov-covcopy).mean()
         # print np.diag(np.abs(cov-covcopy)).sum()
+
+        rv = scipy.stats.multivariate_normal(self.mu,cov)
 
         ll = 1
         for i in range(obs.shape[1]):
@@ -39,7 +46,8 @@ class Prior(Sampler):
             #print scipy.stats.multivariate_normal.logpdf(obs[:,i],self.mu,cov)
 
             try:
-                ll += scipy.stats.multivariate_normal.logpdf(obs[:,i],self.mu,cov)
+                # ll += scipy.stats.multivariate_normal.logpdf(obs[:,i],self.mu,cov)
+                ll += rv.logpdf(obs[:,i])
             except:
                 return -np.inf
 

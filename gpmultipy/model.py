@@ -1,7 +1,7 @@
 import numpy as np
 from kernel import RBF, White
 import linalg, mvn
-# import scipy.stats
+import scipy.stats
 from freeze import Freezeable
 
 class Model(Freezeable):
@@ -41,8 +41,8 @@ class Model(Freezeable):
 
         ll = 1
         for i in range(self.r):
-            # ll += scipy.stats.multivariate_normal.logpdf(self.y[:,i],mu[:,i],cov)
-            ll += mvn.logpdf(self.y[:,i],mu[:,i],cov)
+            ll += scipy.stats.multivariate_normal.logpdf(self.y[:,i],mu[:,i],cov)
+            # ll += mvn.logpdf(self.y[:,i],mu[:,i],cov)
 
         return ll
 
