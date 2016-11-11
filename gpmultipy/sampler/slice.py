@@ -32,12 +32,15 @@ class Slice(Sampler):
         if useLogspace and self.logspace:
             x = pow(10,x)
 
-        pldf = self.prior_logdensity_fxn(x)
-        # if pldf == -np.inf:
-        #     print 'fail'
-        #     return -np.inf
+        try:
+            pldf = self.prior_logdensity_fxn(x)
+            # if pldf == -np.inf:
+            #     print 'fail'
+            #     return -np.inf
 
-        return self.logdensity_fxn(x) + pldf
+            return self.logdensity_fxn(x) + pldf
+        except:
+            return -np.inf
 
     def _sample(self, x):
 
