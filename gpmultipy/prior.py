@@ -60,26 +60,17 @@ class Prior(Sampler):
         n = n[n!=0]
         missingValues = np.isnan(resid)
 
-        # print resid.shape, n.shape
-        # print resid.sum(1)
-        # print n
-
-        resid = np.nansum((resid*n),1)
-        # resid = np.nansum(resid,1)
+        resid = np.nansum(resid*n,1)
         # n = np.sum(((~missingValues)*n).T,0)
-
-        # print resid.shape, n.shape
-        # print resid
-        # print n
-        # print n.sum()
 
         y_inv = yKernel.K_inv(self.x)
         f_inv = self.kernel.K_inv(self.x)
 
         A = n.sum()*y_inv + f_inv
-        # A = n*y_inv + f_inv
-        b = np.dot(y_inv,resid)#.sum(1)
-        # b = np.dot(y_inv*n.sum(),resid)
+        b = np.dot(y_inv,resid)
+
+        # A = y_inv + f_inv
+        # b = np.dot(y_inv,resid)
 
         chol_A = linalg.jitchol(A)
         chol_A_inv = np.linalg.inv(chol_A)
