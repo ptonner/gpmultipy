@@ -12,19 +12,18 @@ class Freezeable(object):
         for a in self.targets:
             if issubclass(type(self.__dict__[a]), Freezeable):
                 ret[a] = self.__dict__[a].freeze()
+            elif type(self.__dict__[a])==types.FunctionType:
+                ret[a] = self.__dict__[a]()
             else:
                 ret[a] = copy.copy(self.__dict__[a])
 
         return ret
-        # return {a:copy.copy(self.__dict__[a]) if type(a) != Freezeable else a:self.__dict__[a].freeze() for a in self.targets}
-        # return {a:copy.copy(self.__dict__[a]) if not type(self.__dict__[a])==types.Function else a:self.__dict__[a]() for a in self.targets}
 
     def update(self,name,value):
         if name in self.targets:
             self.__dict__[name] = value
         else:
             raise AttributeError("attribute %s is not in targets!!"%name)
-
 
 class Freezer(object):
     """brrrrrrrrrrr."""
