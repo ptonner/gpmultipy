@@ -40,8 +40,10 @@ class Model(Freezeable):
         mu = np.dot(self.beta,self.designMatrix)
 
         ll = 1
+        rv = scipy.stats.multivariate_normal(np.zeros(self.n),cov)
         for i in range(self.r):
-            ll += scipy.stats.multivariate_normal.logpdf(self.y[:,i],mu[:,i],cov)
+            ll += rv.logpdf(self.y[:,i]-mu[:,i])
+            # ll += scipy.stats.multivariate_normal.logpdf(self.y[:,i],mu[:,i],cov)
             # ll += mvn.logpdf(self.y[:,i],mu[:,i],cov)
 
         return ll
