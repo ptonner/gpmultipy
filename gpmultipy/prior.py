@@ -61,12 +61,13 @@ class Prior(Sampler):
         missingValues = np.isnan(resid)
 
         resid = np.nansum(resid*n,1)
+        n = np.sum(n)
         # n = np.sum(((~missingValues)*n).T,0)
 
         y_inv = yKernel.K_inv(self.x)
         f_inv = self.kernel.K_inv(self.x)
 
-        A = n.sum()*y_inv + f_inv
+        A = n*y_inv + f_inv
         b = np.dot(y_inv,resid)
 
         # A = y_inv + f_inv
@@ -78,11 +79,14 @@ class Prior(Sampler):
 
         mu,cov = np.dot(A_inv,b), A_inv
 
+        chol = linalg.jitchol(cov)
+        cov = np.dot(cov.T,cov)
+
         return mu,cov
 
     def _sample(self,m,yKernel):
 
-        ret = np.zeros(m.beta.shape)
+        # ret = np.zeros(m.beta.shape)
 
         for f in self.functions:
             mu,cov = self.functionParameters(m,yKernel,f)
