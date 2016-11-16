@@ -22,6 +22,9 @@ class Prior(Sampler):
 
         assert obs.shape[0] == self.n
 
+        if obs.shape[1] != len(self.functions):
+            obs = obs[:,self.functions]
+
         cov = self.kernel.K(self.x,*args,**kwargs)
 
         #solution 1
