@@ -82,8 +82,8 @@ class Prior(Sampler):
 
         mu,cov = np.dot(A_inv,b), A_inv
 
-        chol = linalg.jitchol(cov)
-        cov = np.dot(cov.T,cov)
+        # chol = linalg.jitchol(cov)
+        # cov = np.dot(cov.T,cov)
 
         return mu,cov
 
