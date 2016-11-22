@@ -1,8 +1,8 @@
-from kernel import RBF, White
-import linalg, mvn
+from ..kernel import RBF, White
+from ..sampler.sampler import Sampler
+from .. import linalg, mvn
 import numpy as np
 import scipy.stats
-from sampler.sampler import Sampler
 
 class Prior(Sampler):
 
@@ -16,7 +16,7 @@ class Prior(Sampler):
         self.mu = mu
 
         if self.mu is None:
-            self.mu = np.zeros(self.n)
+            self.mu = np.zeros(self.n)[:,None]
 
         self.smoothCovariance = smoothCovariance
 
@@ -55,7 +55,9 @@ class Prior(Sampler):
         n = n[n!=0]
         missingValues = np.isnan(resid)
 
+        n = n[None,:]
         resid = np.nansum(resid*n,1)
+
         n = np.sum(n)
         # n = np.sum(((~missingValues)*n).T,0)
 

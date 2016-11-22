@@ -22,18 +22,25 @@ class VariableSelection(Prior):
         ind = np.where(select)[0]
         num = select.sum()
 
-        mu = np.repeat(self.mu,select.sum(),1)
+        if included:
+            mu = np.repeat(self.mu,select.sum(),1).ravel(1)
+        else:
+            mu = np.repeat(np.zeros(self.n)[:,None],select.sum(),1).ravel(1)
+
         cov = np.zeros((self.n*select.sum(),self.n*select.sum()))
 
         for i in range(select.sum()):
             for j in range(select.sum()):
                 if i == j:
                     cov[i*self.n:(i+1)*self.n,j*self.n:(j+1)*self.n] += yKernel.K(self.x)
-                cov[i*self.n:(i+1)*self.n,j*self.n:(j+1)*self.n] += self.kernel.K(self.x) * model.designMatrix[f,ind[i]] * model.designMatrix[f,ind[j]]
 
-        data = np.zeros(self.n*num)
-        for i in range(num):
-            data[i*self.n:(i+1)*self.n] = model.y[:,ind[i]] / model.designMatrix[f,ind[i]]
+                if included:
+                    cov[i*self.n:(i+1)*self.n,j*self.n:(j+1)*self.n] += self.kernel.K(self.x) * model.designMatrix[f,ind[i]] * model.designMatrix[f,ind[j]]
+
+        # data = np.zeros(self.n*num)
+        # for i in range(num):
+        #     data[i*self.n:(i+1)*self.n] = model.y[:,ind[i]] / model.designMatrix[f,ind[i]]
+        data = model.residual(f).ravel(1)
 
         rv = scipy.stats.multivariate_normal(mu,cov)
         return rv.logpdf(data)
