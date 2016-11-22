@@ -59,9 +59,18 @@ class VariableSelection(Prior):
         p2 = self.marginalLikelihood(model,yKernel,f,included=False)
         p2 += self.priorrv.logpmf(0)
 
-        p1 = np.exp(p1)
-        p2 = np.exp(p2)
+        # p1 = np.exp(p1)
+        # p2 = np.exp(p2)
 
-        p = p1 / (p1 + p2)
+        # if np.isnan(p1):
+        #     p1 = 0
+        # if np.isnan(p2):
+        #     p2 = 0
+        # if p1 == 0 and p2 == 0:
+        #     raise ValueError("Both probabilities are 0!")
+
+        # p = p1 / (p1 + p2)
+        logp = p1 - np.logaddexp(p1,p2)
+        p = np.exp(logp)
 
         return p
