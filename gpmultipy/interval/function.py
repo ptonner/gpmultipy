@@ -4,20 +4,20 @@ import numpy as np
 class FunctionInterval(Interval):
 
 	def __init__(self,samples,alpha,start=1e-6,tol=1e-6,maxiter=100):
-		Interval.__init__(self,samples,alpha,ndim=2)
+		Interval.__init__(self,samples,alpha,ndim=1)
 
-		p = samples.shape[0]
+		p = samples.n
 		alphaPotential = 1.*np.arange(self.n)/self.n
 		self.alpha = filter(lambda x: abs(x-self.alpha)==abs(self.alpha-alphaPotential).min(),alphaPotential)[0]
 
-		self.mean = samples.mean(0)
-		self.std = samples.std(0)
+		self.mean = samples.array.mean(0)
+		self.std = samples.array.std(0)
 		self.lb,self.ub = self.mean-2*self.std,self.mean+2*self.std
 
 		self.epsilon = start
 
 		# function to calculate the empirical interval alpha for a given epsilon, x
-		check = lambda x: 1.*sum((self.samples>self.lb-x).all(1) & (self.samples<self.ub+x).all(1))/self.n
+		check = lambda x: 1.*sum((self.samples.array>self.lb-x).all(1) & (self.samples.array<self.ub+x).all(1))/self.n
 
 		bounds = []
 
