@@ -1,23 +1,24 @@
 from prior import Prior
+from ..freeze import Freezeable
 import numpy as np
 import scipy
 
-class VariableSelection(Prior):
+class VariableSelection(Prior,Freezeable):
 
-    def __init__(self,x,kernel,functions,mu=None,theta=.5,default=True,**kwargs):
+    def __init__(self,x,kernel,functions,mu=None,theta=.5,default=1,**kwargs):
         """Variable selection prior on functions.
 
         theta: prior (Bernoulli) probability of inclusion
         default: default inclusion or exclusion of functions"""
 
         Prior.__init__(self,x,kernel,functions,mu,**kwargs)
+        Freezeable.__init__(self,'toggle')
+
         self.theta = theta
         self.toggle = [default]*len(self.functions)
         self.priorrv = scipy.stats.bernoulli(self.theta)
 
-    def marginalLikelihood(self,model,yKernel,f,included=True):
-        """The marginal likelihood of data depending on function f."""
-
+    def marginalLikelihoodParams(self,model,yKernel,f,included=True):
         select = model.designMatrix[f,:] != 0
         ind = np.where(select)[0]
         num = select.sum()
@@ -34,8 +35,14 @@ class VariableSelection(Prior):
                 if i == j:
                     cov[i*self.n:(i+1)*self.n,j*self.n:(j+1)*self.n] += yKernel.K(self.x)
 
-                if included:
-                    cov[i*self.n:(i+1)*self.n,j*self.n:(j+1)*self.n] += self.kernel.K(self.x) * model.designMatrix[f,ind[i]] * model.designMatrix[f,ind[j]]
+                    if included:
+                        cov[i*self.n:(i+1)*self.n,j*self.n:(j+1)*self.n] += self.kernel.K(self.x) * model.designMatrix[f,ind[i]] * model.designMatrix[f,ind[j]]
+        return mu,cov
+
+    def marginalLikelihood(self,model,yKernel,f,included=True):
+        """The marginal likelihood of data depending on function f."""
+
+        mu,cov = self.marginalLikelihoodParams(model,yKernel,f,included)
 
         # data = np.zeros(self.n*num)
         # for i in range(num):

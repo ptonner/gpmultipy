@@ -36,7 +36,7 @@ class Prior(Sampler):
         chol = linalg.jitchol(cov)
         cov = np.dot(chol,chol.T)
 
-        rv = scipy.stats.multivariate_normal(self.mu,cov)
+        rv = scipy.stats.multivariate_normal(self.mu[:,0],cov)
 
         ll = 1
         for i in range(obs.shape[1]):
