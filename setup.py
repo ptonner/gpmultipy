@@ -26,7 +26,7 @@ setup(
   cmdclass = cmdclass,
   ext_modules=ext_modules,
 
-  version='0.1.1',
+  version='0.1.3-alpha',
   description='a multilevel Gaussian Process model in Python',
   author='Peter Tonner',
   author_email='peter.tonner@duke.edu',
