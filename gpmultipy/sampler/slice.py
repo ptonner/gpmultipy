@@ -88,3 +88,20 @@ class Slice(Sampler):
             x1 = pow(10,x1)
 
         return x1
+
+
+class PriorSlice(Slice):
+
+    def __init__(self,name,model,functionPrior,paramPrior,param,*args,**kwargs):
+        self.model = model
+        self.functionPrior = functionPrior
+        self.paramPrior = paramPrior
+        self.param = param
+
+        Slice.__init__(self,name,self.observation_loglikelihood,self.prior_loglikelihood,*args,**kwargs)
+
+    def observation_loglikelihood(self,x):
+        return self.functionPrior.loglikelihood(self.model.beta,**{self.param:x})
+
+    def prior_loglikelihood(self,x):
+        return self.paramPrior.logpdf(x)
