@@ -9,7 +9,7 @@ class RBF(Kernel,Freezeable):
         X = X/lengthscale
 
         Xsq = np.sum(np.square(X),1)
-        r2 = -2.*np.dot(X, X.T) + Xsq[:,None] + Xsq[None,:]
+        r2 = -2.*np.dot(X, X.T) + (Xsq[:,None] + Xsq[None,:])
         r2 = np.clip(r2, 0, np.inf)
         return np.sqrt(r2)
 
