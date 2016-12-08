@@ -29,14 +29,15 @@ class Prior(Sampler):
 
         cov = self.kernel.K(self.x,*args,**kwargs)
 
-        #solution 1
-        # cov += cov.mean()*np.eye(self.n)*1e-6
+        try:
+            rv = scipy.stats.multivariate_normal(self.mu[:,0],cov)
+        except:
 
-        # solution 2
-        chol = linalg.jitchol(cov)
-        cov = np.dot(chol,chol.T)
+            # add jitter
+            chol = linalg.jitchol(cov)
+            cov = np.dot(chol,chol.T)
 
-        rv = scipy.stats.multivariate_normal(self.mu[:,0],cov)
+            rv = scipy.stats.multivariate_normal(self.mu[:,0],cov)
 
         ll = 1
         for i in range(obs.shape[1]):
