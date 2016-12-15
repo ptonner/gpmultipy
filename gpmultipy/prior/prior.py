@@ -6,7 +6,7 @@ import scipy.stats
 
 class Prior(Sampler):
 
-    def __init__(self,x,kernel,functions=[],mu=None,smoothCovariance=False):
+    def __init__(self,x,kernel,functions=[],mu=None,smoothCovariance=False,randomizeOrder=False):
         self.x=x
         self.n = self.x.shape[0]
 
@@ -19,6 +19,7 @@ class Prior(Sampler):
             self.mu = np.zeros(self.n)[:,None]
 
         self.smoothCovariance = smoothCovariance
+        self.randomizeOrder = randomizeOrder
 
     def loglikelihood(self,obs,*args,**kwargs):
 
@@ -82,7 +83,12 @@ class Prior(Sampler):
 
     def _sample(self,m,yKernel):
 
-        for f in self.functions:
+        fxns = self.functions
+
+        if self.randomizeOrder:
+            fxns = np.random.choice(fxns,len(fxns),replace=False)
+
+        for f in fxns:
             mu,cov = self.functionParameters(m,yKernel,f)
             m.beta[:,f] = scipy.stats.multivariate_normal.rvs(mu,cov)
             # m.beta[:,f] = scipy.stats.multivariate_normal.rvs(mu,cov)
