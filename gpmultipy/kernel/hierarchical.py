@@ -1,11 +1,20 @@
 from kernel import Kernel
 import numpy as np
+from ..freeze import Freezeable
 
-class Hierarchical(Kernel):
+class Hierarchical(Kernel,Freezeable):
 
     def __init__(self,*args):
         self.kernels = [a for a in args if issubclass(type(a),Kernel)]
         self.levels = len(self.kernels)
+
+        args =[]
+        for i,k in enumerate(self.kernels):
+            name = 'k%d'%(i+1)
+            self.__dict__[name] = k
+            args.append(name)
+
+        Freezeable.__init__(self,*args)
 
     def K(self,x,*args,**kwargs):
 
