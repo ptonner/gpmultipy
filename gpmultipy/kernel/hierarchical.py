@@ -3,14 +3,14 @@ import numpy as np
 
 class Hierarchical(Kernel):
 
-    def __init__(self,*args,):
+    def __init__(self,*args):
         self.kernels = [a for a in args if issubclass(type(a),Kernel)]
         self.levels = len(self.kernels)
 
     def K(self,x,*args,**kwargs):
 
-        ids = x[:,self.levels:]
-        x = x[:,:self.levels]
+        ids = x[:,x.shape[1]-self.levels:]
+        x = x[:,:x.shape[1]-self.levels]
 
         # rebuild 2 dims
         if x.ndim == 1:
