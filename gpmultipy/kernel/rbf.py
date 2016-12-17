@@ -21,6 +21,9 @@ class RBF(Kernel,Freezeable):
         self.lengthscale = lengthscale
 
     def K(self,X,sigma=None,lengthscale=None):
+        X = X[:,:self.p]
+        if X.ndim == 1:
+            X = X[:,None]
 
         if sigma is None:
             sigma = self.sigma
