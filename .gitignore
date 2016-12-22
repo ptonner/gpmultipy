@@ -1,3 +1,9 @@
 *pyc
 dist/
 gpmultipy.egg-info
+bin/
+include/
+lib/
+local/
+share/
+pip-selfcheck.json

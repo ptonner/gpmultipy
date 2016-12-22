@@ -22,5 +22,8 @@ class TestLinalg(unittest.TestCase):
 
     def test_covInv(self):
 
-        cinv = linalg.invert_K(self.cov)
-        self.assertTrue(np.allclose(self.covInv,cinv))
+        for i in range(10):
+            self.setUp()
+
+            cinv = linalg.invert_K(self.cov)
+            self.assertTrue(np.allclose(self.covInv,cinv))
