@@ -33,3 +33,6 @@ class ArrayParameter(Parameter):
     def __call__(self,):
         arr = Parameter.__call__(self)
         return arr[:,self.index]
+
+    def set(self,value):
+        self.obj.__dict__[self.name][:,self.index] = value

@@ -53,5 +53,30 @@ class TestArrayParameter(unittest.TestCase):
         self.param = ArrayParameter(self.dummy,'a',index=idx)
         self.assertTrue(np.all(self.param()==self.dummy.a[:,idx]))
 
+    def test_update(self):
+
+        newarr = np.random.normal(size=50).reshape((10,5))
+        self.param = ArrayParameter(self.dummy,'a',)
+        self.param.set(newarr)
+        self.assertTrue(np.all(newarr==self.dummy.a))
+        self.assertTrue(np.all(self.param()==newarr))
+        self.assertTrue(np.all(self.param()==self.dummy.a))
+
+        idx = [0,1,2]
+        newarr = np.random.normal(size=10*len(idx)).reshape((10,len(idx)))
+        self.param = ArrayParameter(self.dummy,'a',index=idx)
+        self.param.set(newarr)
+        self.assertTrue(np.all(newarr==self.dummy.a[:,idx]))
+        self.assertTrue(np.all(self.param()==newarr))
+        self.assertTrue(np.all(self.param()==self.dummy.a[:,idx]))
+
+        idx = [4]
+        newarr = np.random.normal(size=10*len(idx)).reshape((10,len(idx)))
+        self.param = ArrayParameter(self.dummy,'a',index=idx)
+        self.param.set(newarr)
+        self.assertTrue(np.all(newarr==self.dummy.a[:,idx]))
+        self.assertTrue(np.all(self.param()==newarr))
+        self.assertTrue(np.all(self.param()==self.dummy.a[:,idx]))
+
 if __name__ == '__main__':
     unittest.main()
